@@ -18,3 +18,7 @@ class InsufficientFunds(ATMException):
 
 class IncorrectMenuOption(ATMException):
     """Выбран некорректный пункт меню"""
+
+
+class CardNotExists(ATMException):
+    """Некорректный номер карты, её нет в нашем хранилище"""
