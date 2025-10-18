@@ -1,5 +1,12 @@
 from typing import TypedDict
 
+from .exceptions import (
+    IncorrectMenuOption,
+    InsufficientFunds,
+    InvalidAmount,
+    PinCodeAttemptsExceed,
+)
+
 
 # Максимальное количество попыток ввода пин-кода
 MAX_PIN_INPUT_ATTEMPTS = 3
@@ -39,24 +46,6 @@ cards: Cards = {
         "balance": 28_500
     }
 }
-
-
-class PinCodeAttemptsExceed(Exception):
-    """Закончились попытки ввода пин-кода"""
-    pass
-
-
-class IncorrectMenuOption(Exception):
-    """Пользователем введён некорректный номер пункта меню"""
-    pass
-
-
-class InvalidAmount(Exception):
-    """Некорректная сумма денег"""
-
-
-class InsufficientFunds(Exception):
-    """Недостаточно средств для снятия со счёта"""
 
 
 def authenticate_user(cards: Cards, max_attempts: int) -> CardNumber:
