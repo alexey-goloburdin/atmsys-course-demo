@@ -1,11 +1,12 @@
-from typing import TypedDict
-
 from .exceptions import (
     IncorrectMenuOption,
     InsufficientFunds,
     InvalidAmount,
     PinCodeAttemptsExceed,
+    CardNotExists
 )
+from .typedefs import CardNumber, Card, Cards, Rubles, PIN
+from .card_repository import CardRepository
 
 
 # Максимальное количество попыток ввода пин-кода
@@ -26,26 +27,26 @@ MENU = {
     }
 }
 
-type Rubles = int
-type PIN = str
 
-class Card(TypedDict):
-    pin: PIN
-    balance: Rubles
+class ATM:
+    """Управляющая логика банкомата"""
+    ...
 
-type CardNumber = str
-type Cards = dict[CardNumber, Card]
+class ConsoleUI:
+    """Пользовательский интерфейс банкомата"""
+    ...
+    
+class Menu:
+    """Меню банкомата"""
+    ...
 
-cards: Cards = {
-    "3333444455556666": {
-        "pin": "1234",
-        "balance": 1_000
-    },
-    "1234567890123456": {
-        "pin": "7777",
-        "balance": 28_500
-    }
-}
+class BankAccount:
+    """Работа с банковским счётом — пополнение баланса, снятие денег"""
+    ...
+
+
+
+
 
 
 def authenticate_user(cards: Cards, max_attempts: int) -> CardNumber:
