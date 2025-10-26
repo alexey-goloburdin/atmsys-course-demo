@@ -1,4 +1,7 @@
-class ConsoleUI:
+from .menu import UI
+
+
+class ConsoleUI(UI):
     """Пользовательский интерфейс банкомата"""
     def show_message(self, message: str) -> None:
         """Показывает сообщение message пользователю"""

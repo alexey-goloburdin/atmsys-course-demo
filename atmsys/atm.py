@@ -2,6 +2,7 @@ from typing import NoReturn
 
 from .bank_account import BankAccount
 from .card_repository import CardRepository
+from .bank_account import BankAccount, CardRepository
 from .exceptions import (
     ATMException,
     CardNotExists, 
@@ -10,8 +11,7 @@ from .exceptions import (
     InvalidAmount,
     PinCodeAttemptsExceed 
 )
-from .menu import Menu
-from .ui import ConsoleUI
+from .menu import Menu, UI
 
 
 MAX_PIN_INPUT_ATTEMPTS = 3
@@ -22,7 +22,7 @@ class ATM:
 
     def __init__(self,
                  card_repository: CardRepository,
-                 ui: ConsoleUI,
+                 ui: UI,
                  menu: Menu,
                  max_pin_input_attempts: int=MAX_PIN_INPUT_ATTEMPTS) -> None:
         self._card_repository = card_repository
