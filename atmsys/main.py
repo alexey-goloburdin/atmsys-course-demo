@@ -1,5 +1,5 @@
 from atmsys.atm import ATM
-from atmsys.card_repository import CardRepository
+from atmsys.card_repository import InMemoryCardRepository
 from atmsys.ui import ConsoleUI
 from atmsys.menu import (
     CheckBalanceMenuItem,
@@ -13,7 +13,7 @@ from atmsys.menu import (
 def main():
     ui = ConsoleUI()
     atm = ATM(
-        card_repository=CardRepository(),
+        card_repository=InMemoryCardRepository(),
         ui=ui,
         menu=Menu(items=[
             CheckBalanceMenuItem(),

@@ -1,6 +1,31 @@
-from .card_repository import CardRepository
+from abc import ABC, abstractmethod
 from .exceptions import CardNotExists, InsufficientFunds
 from .typedefs import Rubles, CardNumber, PIN
+
+
+class CardRepository(ABC):
+    @abstractmethod
+    def withdraw(self, card: CardNumber, amount: Rubles) -> None:
+        """Снимает amount рублей с баланса карты с номером card"""
+        pass
+    
+    @abstractmethod
+    def deposit(self, card: CardNumber, amount: Rubles) -> None:
+        """Пополняет баланс карты с номером card на amount рублей""" 
+        pass
+    
+    @abstractmethod
+    def get_balance(self, card: CardNumber) -> int:
+        """Возвращает баланс карты по её номеру"""
+        pass
+    
+    @abstractmethod
+    def is_card_pin_valid(self, card: CardNumber, pin: PIN) -> bool:
+        """
+        Возвращает True, если пин код соответствует карте.
+        Если карты нет в хранилище, падает исключение CardNotExists
+        """
+        pass
 
 
 class BankAccount:

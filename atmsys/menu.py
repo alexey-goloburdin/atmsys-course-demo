@@ -3,7 +3,24 @@ from typing import Sequence
 
 from .bank_account import BankAccount
 from .exceptions import InvalidAmount, InsufficientFunds, IncorrectMenuOption
-from .ui import ConsoleUI
+
+
+class UI(ABC):
+    """Пользовательский интерфейс банкомата"""
+    @abstractmethod
+    def show_message(self, message: str) -> None:
+        """Показывает сообщение message пользователю"""
+        ...
+
+    @abstractmethod
+    def get_input(self, prompt: str) -> str:
+        """Запрашивает данные у пользователя и возвращает их"""
+        ...
+
+    @abstractmethod
+    def show_separator(self) -> None:
+        """Показывает визуальный разделитель"""
+        ...
 
 
 class MenuItem(ABC):
@@ -13,7 +30,7 @@ class MenuItem(ABC):
         self.description = description
 
     @abstractmethod
-    def execute(self, bank_account: BankAccount, ui: ConsoleUI)  -> None:
+    def execute(self, bank_account: BankAccount, ui: UI)  -> None:
         """Выполняет действие при выборе этого пункта меню"""
         pass
 
@@ -23,7 +40,7 @@ class CheckBalanceMenuItem(MenuItem):
     def __init__(self):
         super().__init__("Проверить баланс")
 
-    def execute(self, bank_account: BankAccount, ui: ConsoleUI) -> None:
+    def execute(self, bank_account: BankAccount, ui: UI) -> None:
         """Показывает пользователю текущий баланс карты"""
         balance = bank_account.get_balance()
         ui.show_message(f"Ваш баланс: {balance} руб.")
@@ -34,7 +51,7 @@ class WithdrawMenuItem(MenuItem):
     def __init__(self):
         super().__init__("Снять деньги")
 
-    def execute(self, bank_account: BankAccount, ui: ConsoleUI) -> None:
+    def execute(self, bank_account: BankAccount, ui: UI) -> None:
         """Выполняет снятие денег с баланса карты"""
         amount = ui.get_input("Сколько вы хотите снять?\nВведите сумму: ")
         balance = bank_account.get_balance()
@@ -59,7 +76,7 @@ class DepositMenuItem(MenuItem):
     def __init__(self):
         super().__init__("Пополнить счёт")
 
-    def execute(self, bank_account: BankAccount, ui: ConsoleUI) -> None:
+    def execute(self, bank_account: BankAccount, ui: UI) -> None:
         """Выполняет пополнение баланса карты"""
         amount = ui.get_input("Сколько вы хотите внести?\nВведите сумму: ")
 
@@ -80,7 +97,7 @@ class ExitMenuItem(MenuItem):
     def __init__(self):
         super().__init__("Выход")
 
-    def execute(self, bank_account: BankAccount, ui: ConsoleUI) -> None:
+    def execute(self, bank_account: BankAccount, ui: UI) -> None:
         """Выполняет выход из меню банкомата"""
         ui.show_message("Спасибо, что пользуетесь нашим банкоматом!")
         raise SystemExit
@@ -88,7 +105,7 @@ class ExitMenuItem(MenuItem):
 
 class Menu:
     """Меню банкомата"""
-    def __init__(self, items: Sequence[MenuItem], ui: ConsoleUI):
+    def __init__(self, items: Sequence[MenuItem], ui: UI):
         self._items = items
         self._ui = ui
 

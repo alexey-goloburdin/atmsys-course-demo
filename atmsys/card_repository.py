@@ -1,8 +1,9 @@
+from .bank_account import CardRepository
 from .exceptions import CardNotExists
 from .typedefs import CardNumber, Cards, PIN, Rubles
 
 
-class CardRepository:
+class InMemoryCardRepository(CardRepository):
     """Работа с хранилищем данных по картам"""
     _cards: Cards = {
         "3333444455556666": {
