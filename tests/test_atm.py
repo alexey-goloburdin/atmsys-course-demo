@@ -13,6 +13,7 @@ from atmsys.menu import (
     Menu,
     WithdrawMenuItem,
 )
+from atmsys.ui_messages import UiMessage
 
 
 class MenuCommand(str, Enum):
@@ -20,6 +21,7 @@ class MenuCommand(str, Enum):
     WITHDRAW = "2"
     DEPOSIT = "3"
     EXIT = "4"
+    INCORRECT_ITEM = "5"
 
 
 @pytest.fixture
@@ -57,7 +59,7 @@ def test_atm_authenticates_on_firts_attempt(
     with pytest.raises(SystemExit):
         sut.run()
 
-    assert "PIN принят. Добро пожаловать!" in ui.messages
+    assert UiMessage.PIN_ACCEPTED in ui.messages
 
 
 def test_atm_authenticates_on_second_attempt(
@@ -69,7 +71,7 @@ def test_atm_authenticates_on_second_attempt(
     with pytest.raises(SystemExit):
         sut.run()
 
-    assert "PIN принят. Добро пожаловать!" in ui.messages
+    assert UiMessage.PIN_ACCEPTED in ui.messages
 
 
 def test_atm_does_not_authenticate_after_attempts_ended(
@@ -81,11 +83,11 @@ def test_atm_does_not_authenticate_after_attempts_ended(
     with pytest.raises(SystemExit):
         sut.run()
 
-    assert "PIN принят. Добро пожаловать!" not in ui.messages
-    assert "Карта заблокирована. Обратитесь в банк." in ui.messages
+    assert UiMessage.PIN_ACCEPTED not in ui.messages
+    assert UiMessage.CARD_BLOCKED in ui.messages
 
 
-def test_atm_displays_correct_balance(
+def test_atm_display_correct_balance(
     make_atm: Callable[[UI], ATM],
 ):
     ui = FakeUI(
@@ -96,7 +98,7 @@ def test_atm_displays_correct_balance(
     with pytest.raises(SystemExit):
         sut.run()
 
-    assert "Ваш баланс: 100 руб." in ui.messages
+    assert UiMessage.BALANCE.format(balance=100) in ui.messages
 
 
 def test_atm_successful_withdraw(
@@ -124,10 +126,10 @@ def test_atm_successful_withdraw(
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
-    assert "Ваш баланс: 89 руб." in ui.messages
+    assert UiMessage.BALANCE.format(balance=89) in ui.messages
 
 
-def test_atm_does_not_withdraw_above_the_limit(
+def test_atm_did_not_withdraw_above_the_limit(
     make_atm: Callable[[UI], ATM],
 ):
     ui = FakeUI(
@@ -144,7 +146,7 @@ def test_atm_does_not_withdraw_above_the_limit(
     with pytest.raises(SystemExit):
         sut.run()
 
-    assert "Недостаточно средств для снятия со счёта" in ui.messages
+    assert UiMessage.INSUFFICIENT_FUNDS in ui.messages
 
 
 def test_atm_does_not_withdraw_incorrect_amount(
@@ -172,7 +174,7 @@ def test_atm_does_not_withdraw_incorrect_amount(
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
-    assert "Ваш баланс: 100 руб." in ui.messages
+    assert UiMessage.BALANCE.format(balance=100) in ui.messages
 
 
 def test_atm_successful_deposit(
@@ -200,7 +202,7 @@ def test_atm_successful_deposit(
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
-    assert "Ваш баланс: 115 руб." in ui.messages
+    assert UiMessage.BALANCE.format(balance=115) in ui.messages
 
 
 def test_atm_does_not_deposit_incorrect_amount(
@@ -234,4 +236,25 @@ def test_atm_does_not_deposit_incorrect_amount(
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
-    assert "Ваш баланс: 100 руб." in ui.messages
+
+    assert UiMessage.BALANCE.format(balance=100) in ui.messages
+
+
+def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM]):
+    # Выбираем некорректный пункт меню
+    ui = FakeUI(
+        inputs=(
+            "1333444455556666",
+            "5678",
+            MenuCommand.INCORRECT_ITEM,
+            MenuCommand.EXIT,
+        )
+    )
+    sut = make_atm(ui)
+
+    with pytest.raises(SystemExit):
+        sut.run()
+
+    assert (
+        UiMessage.INCORRECT_MENU_ITEM.format(min_choice=1, max_choice=4) in ui.messages
+    )
