@@ -57,16 +57,13 @@ class WithdrawMenuItem(MenuItem):
         amount = ui.get_input(UiMessage.HOW_MUCH_WITHDRAW_INPUT)
         balance = bank_account.get_balance()
 
-        if not amount.isdigit():
+        try:
+            amount = int(amount)
+        except ValueError:
             raise InvalidAmount(UiMessage.AMOUNT_MUST_BE_DIGIT)
-
-        amount = int(amount)
 
         if amount <= 0:
             raise InvalidAmount(UiMessage.AMOUNT_MUST_BE_POSITIVE)
-
-        if amount > balance:
-            raise InsufficientFunds
 
         bank_account.withdraw(amount)
         ui.show_message(UiMessage.BALANCE.format(
@@ -83,10 +80,10 @@ class DepositMenuItem(MenuItem):
         """Выполняет пополнение баланса карты"""
         amount = ui.get_input(UiMessage.HOW_MUCH_DEPOSIT_INPUT)
 
-        if not amount.isdigit():
+        try:
+            amount = int(amount)
+        except ValueError:
             raise InvalidAmount(UiMessage.AMOUNT_MUST_BE_DIGIT)
-
-        amount = int(amount)
 
         if amount <= 0:
             raise InvalidAmount(UiMessage.AMOUNT_MUST_BE_POSITIVE)
