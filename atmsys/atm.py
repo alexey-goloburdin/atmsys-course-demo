@@ -55,16 +55,20 @@ class ATM:
                 continue
 
             self._ui.show_separator()
-            try:
-                self._menu.execute_item(user_menu_item_choice, self._bank_account)
-            except InvalidAmount as e:
-                self._ui.show_message(str(e))
-            except InsufficientFunds:
-                self._ui.show_message(UiMessage.INSUFFICIENT_FUNDS)
-            except CardNotExists:
-                self._ui.show_message(UiMessage.CARD_NOT_EXISTS)
-            except ATMException:
-                self._ui.show_message(UiMessage.ATM_EXCEPTION)
+            self._execute_menu_item(user_menu_item_choice)
+
+    def _execute_menu_item(self, user_menu_item_choice: int) -> None:
+        """Выполняет логику выбранного пользователем пунтка меню"""
+        try:
+            self._menu.execute_item(user_menu_item_choice, self._bank_account)
+        except InvalidAmount as e:
+            self._ui.show_message(str(e))
+        except InsufficientFunds:
+            self._ui.show_message(UiMessage.INSUFFICIENT_FUNDS)
+        except CardNotExists:
+            self._ui.show_message(UiMessage.CARD_NOT_EXISTS)
+        except ATMException:
+            self._ui.show_message(UiMessage.ATM_EXCEPTION)
 
     def _authenticate(self) -> bool:
         """
