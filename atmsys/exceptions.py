@@ -1,10 +1,12 @@
 class ATMException(Exception):
     """Базовое исключение для банкомата"""
+
     pass
 
 
 class PinCodeAttemptsExceed(ATMException):
     """Закончились попытки ввода пин-кода"""
+
     pass
 
 
