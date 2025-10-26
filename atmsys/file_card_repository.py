@@ -57,3 +57,6 @@ class FileCardRepository(CardRepository):
     def _save(self) -> None:
         with open(self._filename, "w") as f:
             json.dump(self._cards, f)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(filename={self._filename!r})"

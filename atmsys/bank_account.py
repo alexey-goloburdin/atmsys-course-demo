@@ -57,3 +57,9 @@ class BankAccount:
             return self._card_repository.is_card_pin_valid(self._card, pin)
         except CardNotExists:
             return False
+    
+    def __repr__(self) -> str:
+        return (
+            f"""{self.__class__.__name__}(card={self._card!r}, """
+            f"""card_repository={self._card_repository!r})"""
+        )
