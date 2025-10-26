@@ -28,4 +28,7 @@ def main() -> NoReturn:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        raise SystemExit
