@@ -32,9 +32,7 @@ class RuUiMessage(StrEnum):
 class EnUiMessage(StrEnum):
     GREETINGS = "Welcome to the ATM!"
     CARD_BLOCKED = "Your card has been blocked. Please contact your bank."
-    INCORRECT_MENU_ITEM = (
-        "Input error. Enter a number between {min_choice} and {max_choice}."
-    )
+    INCORRECT_MENU_ITEM = "Input error. Enter a number between {min_choice} and {max_choice}."
     INSUFFICIENT_FUNDS = "Insufficient funds to withdraw from account"
     CARD_NOT_EXISTS = "Sorry, card not found"
     ATM_EXCEPTION = "Sorry, something went wrong"
@@ -50,7 +48,7 @@ class EnUiMessage(StrEnum):
     INPUT_CARD_PIN = "Enter the PIN: "
     HOW_MUCH_WITHDRAW_INPUT = "How much do you want to withdraw?\nEnter the amount: "
     HOW_MUCH_DEPOSIT_INPUT = "How much would you like to deposit?\nEnter the amount: "
-    
+
     MENU_NUMBER_INPUT = "Enter the operation number: "
     MENU_CHOOSE_ITEM = "Select an operation"
     MENU_GET_BALANCE_ITEM = "Check your balance"

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
+
 from .exceptions import CardNotExists, InsufficientFunds
-from .typedefs import Rubles, CardNumber, PIN
+from .typedefs import PIN, CardNumber, Rubles
 
 
 class CardRepository(ABC):
@@ -8,17 +9,17 @@ class CardRepository(ABC):
     def withdraw(self, card: CardNumber, amount: Rubles) -> None:
         """Снимает amount рублей с баланса карты с номером card"""
         pass
-    
+
     @abstractmethod
     def deposit(self, card: CardNumber, amount: Rubles) -> None:
-        """Пополняет баланс карты с номером card на amount рублей""" 
+        """Пополняет баланс карты с номером card на amount рублей"""
         pass
-    
+
     @abstractmethod
     def get_balance(self, card: CardNumber) -> int:
         """Возвращает баланс карты по её номеру"""
         pass
-    
+
     @abstractmethod
     def is_card_pin_valid(self, card: CardNumber, pin: PIN) -> bool:
         """
@@ -30,6 +31,7 @@ class CardRepository(ABC):
 
 class BankAccount:
     """Работа с банковским счётом — пополнение баланса, снятие денег"""
+
     def __init__(self, card: CardNumber, card_repository: CardRepository):
         self._card = card
         self._card_repository = card_repository
@@ -41,9 +43,9 @@ class BankAccount:
         self._card_repository.withdraw(self._card, amount)
 
     def deposit(self, amount: Rubles) -> None:
-        """Пополняет баланс карты на amount рублей""" 
+        """Пополняет баланс карты на amount рублей"""
         self._card_repository.deposit(self._card, amount)
-    
+
     def get_balance(self) -> int:
         """Возвращает баланс карты"""
         return self._card_repository.get_balance(self._card)
@@ -57,7 +59,7 @@ class BankAccount:
             return self._card_repository.is_card_pin_valid(self._card, pin)
         except CardNotExists:
             return False
-    
+
     def __repr__(self) -> str:
         return (
             f"""{self.__class__.__name__}(card={self._card!r}, """

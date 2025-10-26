@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Sequence
+from collections.abc import Sequence
 
 from .bank_account import BankAccount
-from .exceptions import InvalidAmount, InsufficientFunds, IncorrectMenuOption
+from .exceptions import IncorrectMenuOption, InvalidAmount
 from .ui_messages import UiMessage
 
 
 class UI(ABC):
     """Пользовательский интерфейс банкомата"""
+
     @abstractmethod
     def show_message(self, message: str) -> None:
         """Показывает сообщение message пользователю"""
@@ -29,12 +30,13 @@ class UI(ABC):
 
 class MenuItem(ABC):
     """Абстрактный пункт меню банкомата"""
+
     def __init__(self, description: str):
         # Название пункта меню, которое будет выводиться пользователю
         self.description = description
 
     @abstractmethod
-    def execute(self, bank_account: BankAccount, ui: UI)  -> None:
+    def execute(self, bank_account: BankAccount, ui: UI) -> None:
         """Выполняет действие при выборе этого пункта меню"""
         pass
 
@@ -44,6 +46,7 @@ class MenuItem(ABC):
 
 class CheckBalanceMenuItem(MenuItem):
     """Пункт меню — проверка баланса карты"""
+
     def __init__(self):
         super().__init__(UiMessage.MENU_GET_BALANCE_ITEM)
 
@@ -55,13 +58,13 @@ class CheckBalanceMenuItem(MenuItem):
 
 class WithdrawMenuItem(MenuItem):
     """Пункт меню — списание денег с баланса карты"""
+
     def __init__(self):
         super().__init__(UiMessage.MENU_WITHDRAW_ITEM)
 
     def execute(self, bank_account: BankAccount, ui: UI) -> None:
         """Выполняет снятие денег с баланса карты"""
         amount = ui.get_input(UiMessage.HOW_MUCH_WITHDRAW_INPUT)
-        balance = bank_account.get_balance()
 
         try:
             amount = int(amount)
@@ -72,13 +75,12 @@ class WithdrawMenuItem(MenuItem):
             raise InvalidAmount(UiMessage.AMOUNT_MUST_BE_POSITIVE)
 
         bank_account.withdraw(amount)
-        ui.show_message(UiMessage.BALANCE.format(
-            balance=bank_account.get_balance())
-        )
+        ui.show_message(UiMessage.BALANCE.format(balance=bank_account.get_balance()))
 
 
 class DepositMenuItem(MenuItem):
     """Пункт меню — пополнение баланса карты"""
+
     def __init__(self):
         super().__init__(UiMessage.MENU_DEPOSIT_ITEM)
 
@@ -100,6 +102,7 @@ class DepositMenuItem(MenuItem):
 
 class ExitMenuItem(MenuItem):
     """Пункт меню — выход из меню банкомата"""
+
     def __init__(self):
         super().__init__(UiMessage.MENU_EXIT_ITEM)
 
@@ -111,6 +114,7 @@ class ExitMenuItem(MenuItem):
 
 class Menu:
     """Меню банкомата"""
+
     def __init__(self, items: Sequence[MenuItem], ui: UI):
         self._items = items
         self._ui = ui

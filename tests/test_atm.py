@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable
 
 import pytest
 from fakes.in_memory_card_repository import InMemoryCardRepository
@@ -91,9 +91,7 @@ def test_atm_does_not_authenticate_after_attempts_ended(
 def test_atm_display_correct_balance(
     make_atm: Callable[[UI], ATM],
 ):
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
 
     with pytest.raises(SystemExit):
@@ -121,9 +119,7 @@ def test_atm_successful_withdraw(
         sut.run()
 
     # Проверяем, что баланс теперь 89 руб
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
@@ -169,9 +165,7 @@ def test_atm_does_not_withdraw_incorrect_amount(
         sut.run()
 
     # Проверяем, что баланс остался прежним
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
@@ -182,9 +176,7 @@ def test_atm_successful_deposit(
     make_atm: Callable[[UI], ATM],
 ):
     # Начальный баланс 1000 руб, пополняем на 115 руб
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.DEPOSIT, "15", MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.DEPOSIT, "15", MenuCommand.EXIT))
     sut = make_atm(ui)
 
     with pytest.raises(SystemExit):
@@ -197,9 +189,7 @@ def test_atm_successful_deposit(
     with pytest.raises(SystemExit):
         sut.run()
 
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
@@ -231,9 +221,7 @@ def test_atm_does_not_deposit_incorrect_amount(
     with pytest.raises(SystemExit):
         sut.run()
 
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
@@ -245,8 +233,7 @@ def test_atm_does_not_deposit_incorrect_amount(
     "incorrect_menu_item",
     [MenuCommand.INCORRECT_ITEM, MenuCommand.ANOTHER_INCORRECT_ITEM],
 )
-def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM],
-                                               incorrect_menu_item: MenuCommand):
+def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM], incorrect_menu_item: MenuCommand):
     # Выбираем некорректный пункт меню
     ui = FakeUI(
         inputs=(
@@ -261,9 +248,7 @@ def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM],
     with pytest.raises(SystemExit):
         sut.run()
 
-    assert (
-        UiMessage.INCORRECT_MENU_ITEM.format(min_choice=1, max_choice=4) in ui.messages
-    )
+    assert UiMessage.INCORRECT_MENU_ITEM.format(min_choice=1, max_choice=4) in ui.messages
 
 
 def test_atm_does_not_withdraw_negative_amount(
@@ -285,9 +270,7 @@ def test_atm_does_not_withdraw_negative_amount(
         sut.run()
 
     # Проверяем, что баланс остался прежним
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
@@ -313,9 +296,7 @@ def test_atm_does_not_deposit_negative_amount(
         sut.run()
 
     # Проверяем, что баланс остался прежним
-    ui = FakeUI(
-        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
-    )
+    ui = FakeUI(inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT))
     sut = make_atm(ui)
     with pytest.raises(SystemExit):
         sut.run()
