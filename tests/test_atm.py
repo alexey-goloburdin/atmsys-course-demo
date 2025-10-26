@@ -22,6 +22,7 @@ class MenuCommand(str, Enum):
     DEPOSIT = "3"
     EXIT = "4"
     INCORRECT_ITEM = "5"
+    ANOTHER_INCORRECT_ITEM = "hello"
 
 
 @pytest.fixture
@@ -240,13 +241,18 @@ def test_atm_does_not_deposit_incorrect_amount(
     assert UiMessage.BALANCE.format(balance=100) in ui.messages
 
 
-def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM]):
+@pytest.mark.parametrize(
+    "incorrect_menu_item",
+    [MenuCommand.INCORRECT_ITEM, MenuCommand.ANOTHER_INCORRECT_ITEM],
+)
+def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM],
+                                               incorrect_menu_item: MenuCommand):
     # Выбираем некорректный пункт меню
     ui = FakeUI(
         inputs=(
             "1333444455556666",
             "5678",
-            MenuCommand.INCORRECT_ITEM,
+            incorrect_menu_item,
             MenuCommand.EXIT,
         )
     )
@@ -258,3 +264,72 @@ def test_atm_check_menu_option_for_correctness(make_atm: Callable[[UI], ATM]):
     assert (
         UiMessage.INCORRECT_MENU_ITEM.format(min_choice=1, max_choice=4) in ui.messages
     )
+
+
+def test_atm_does_not_withdraw_negative_amount(
+    make_atm: Callable[[UI], ATM],
+):
+    # Начальный баланс 1000 руб, списываем некорректную сумму
+    ui = FakeUI(
+        inputs=(
+            "1333444455556666",
+            "5678",
+            MenuCommand.WITHDRAW,
+            "-1",  # некорректная сумма
+            MenuCommand.EXIT,
+        )
+    )
+    sut = make_atm(ui)
+
+    with pytest.raises(SystemExit):
+        sut.run()
+
+    # Проверяем, что баланс остался прежним
+    ui = FakeUI(
+        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
+    )
+    sut = make_atm(ui)
+    with pytest.raises(SystemExit):
+        sut.run()
+    assert UiMessage.BALANCE.format(balance=100) in ui.messages
+
+
+def test_atm_does_not_deposit_negative_amount(
+    make_atm: Callable[[UI], ATM],
+):
+    # Начальный баланс 1000 руб, списываем некорректную сумму
+    ui = FakeUI(
+        inputs=(
+            "1333444455556666",
+            "5678",
+            MenuCommand.DEPOSIT,
+            "-1",  # некорректная сумма
+            MenuCommand.EXIT,
+        )
+    )
+    sut = make_atm(ui)
+
+    with pytest.raises(SystemExit):
+        sut.run()
+
+    # Проверяем, что баланс остался прежним
+    ui = FakeUI(
+        inputs=("1333444455556666", "5678", MenuCommand.GET_BALANCE, MenuCommand.EXIT)
+    )
+    sut = make_atm(ui)
+    with pytest.raises(SystemExit):
+        sut.run()
+    assert UiMessage.BALANCE.format(balance=100) in ui.messages
+
+
+def test_atm_does_not_authenticate_with_not_exists_card(
+    make_atm: Callable[[UI], ATM],
+):
+    ui = FakeUI(inputs=("7777777", "5678", "5678"))
+    sut = make_atm(ui)
+
+    with pytest.raises(SystemExit):
+        sut.run()
+
+    assert UiMessage.PIN_ACCEPTED not in ui.messages
+    assert UiMessage.CARD_BLOCKED in ui.messages
