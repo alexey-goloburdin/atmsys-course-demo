@@ -46,3 +46,6 @@ class InMemoryCardRepository(CardRepository):
         """
         if card not in type(self)._cards:
             raise CardNotExists
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}()"

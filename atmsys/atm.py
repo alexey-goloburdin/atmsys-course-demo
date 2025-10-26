@@ -95,3 +95,9 @@ class ATM:
                     )
         else:
             raise PinCodeAttemptsExceed
+
+    def __repr__(self) -> str:
+        return (
+            f"""{self.__class__.__name__}(card_repository={self._card_repository!r}, ui={self._ui!r}, """
+            f"""menu={self._menu!r}, max_pin_input_attempts={self._max_pin_input_attempts!r})"""
+        )

@@ -23,6 +23,9 @@ class UI(ABC):
         """Показывает визуальный разделитель"""
         ...
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}()"
+
 
 class MenuItem(ABC):
     """Абстрактный пункт меню банкомата"""
@@ -34,6 +37,9 @@ class MenuItem(ABC):
     def execute(self, bank_account: BankAccount, ui: UI)  -> None:
         """Выполняет действие при выборе этого пункта меню"""
         pass
+
+    def __repr__(self) -> str:
+        return f"""{self.__class__.__name__}(description="{self.description!r}")"""
 
 
 class CheckBalanceMenuItem(MenuItem):
@@ -141,3 +147,6 @@ class Menu:
             return False
         min_choice_number, max_choice_number = self.get_menu_min_max_numbers()
         return min_choice_number <= int(user_menu_item_choice) <= max_choice_number
+
+    def __repr__(self) -> str:
+        return f"""{self.__class__.__name__}(items={self._items!r})"""
