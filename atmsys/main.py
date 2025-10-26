@@ -1,6 +1,7 @@
 from atmsys.atm import ATM
 from atmsys.card_repository import InMemoryCardRepository
-from atmsys.ui import ConsoleUI
+from atmsys.ui import GreenConsoleUI, RedConsoleUI
+from atmsys.file_card_repository import FileCardRepository
 from atmsys.menu import (
     CheckBalanceMenuItem,
     DepositMenuItem,
@@ -11,9 +12,9 @@ from atmsys.menu import (
 
 
 def main():
-    ui = ConsoleUI()
+    ui = GreenConsoleUI()
     atm = ATM(
-        card_repository=InMemoryCardRepository(),
+        card_repository=FileCardRepository("cards.json"),
         ui=ui,
         menu=Menu(items=[
             CheckBalanceMenuItem(),
